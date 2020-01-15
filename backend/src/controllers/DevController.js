@@ -1,5 +1,6 @@
 const axios = require('axios');
 const Dev = require('../models/Dev');
+const parseStringAsArray = require('../utils/parseStringAsArray');
 
 
 /**
@@ -46,8 +47,8 @@ module.exports = {
             // Recebendo a resposta da requisição fazemos    
             let { name, avatar_url, bio }  = response_github.data;
             
-            // Splitando por virgula e em conjunto com o map retirando espaços desnecessários nas Strings.
-            let techsArray = techs.split(',').map(tech => tech.trim());
+            //Transformando String Techs em um Array
+            const techsArray = parseStringAsArray(techs);
         
             // Sobrepondo name caso ele não exista, pois ele não é obrigatório no GitHub
             if(!name){
@@ -79,5 +80,29 @@ module.exports = {
         return response.json(dev);
     },
 
+
+    //Para Casa
+    async update(){
+        /**
+         * Campos que podem ser atualizados
+         * nome,
+         * avatar,
+         * bio
+         * localização
+         * techs
+         * 
+         * O QUE NÃO PODE É O GITHUB USERNAME
+         * 
+         */
+
+        return response.json({message : 'Aguardadndo Implementação!'});
+    },
+
+    //Para Casa 
+    async destroy(){
+        
+        
+        return response.json({message : 'Aguardadndo Implementação!'});
+    }
 
 };
