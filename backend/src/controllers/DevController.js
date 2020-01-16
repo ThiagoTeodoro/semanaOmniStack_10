@@ -23,6 +23,7 @@ module.exports = {
     async index(request, response) {
         
         const devs = await Dev.find();
+        console.log('Lista de desenvolvedores retornada.');
         return response.json(devs);
     },
 
@@ -43,7 +44,7 @@ module.exports = {
 
             // O await força em conjunto com o async esperar/aguardar a resposta da requisição do axios
             const response_github = await axios.get('https://api.github.com/users/' + github_username);
-        
+
             // Recebendo a resposta da requisição fazemos    
             let { name, avatar_url, bio }  = response_github.data;
             
@@ -70,7 +71,12 @@ module.exports = {
                 location : location,
             });
 
-        };
+            console.log('Desenvolvedor cadastrado com sucesso.');
+
+        } else  {
+
+            console.log('Desenvolvedor já cadastrado no banco de dados.');
+        }
 
         /**
          * Como eu selecionei ele lá em cima, se ele já tiver cadastrado ele 
