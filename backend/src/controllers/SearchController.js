@@ -28,6 +28,7 @@ module.exports = {
             }
         });
         
+        console.log('Retornando Devs...');
         return response.json({devs : devs});
     },
 
