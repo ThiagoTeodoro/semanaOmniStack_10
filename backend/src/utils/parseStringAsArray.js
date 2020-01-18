@@ -4,5 +4,10 @@
  * do split, e da limpeza dos espaços denessário com o trim.
  */
 module.exports = function parseStringAsArray(arrayAsString) {    
-    return arrayAsString.split(',').map(data => data.trim());
+
+    if(arrayAsString) {
+        return arrayAsString.split(',').map(data => data.trim());
+    } else {
+        return '';
+    }
 };

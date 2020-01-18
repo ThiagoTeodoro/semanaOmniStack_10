@@ -1,7 +1,7 @@
 const axios = require('axios');
 const Dev = require('../models/Dev');
 const parseStringAsArray = require('../utils/parseStringAsArray');
-
+const { findConnections, sendEventToClient } = require('../websocket');
 
 /**
  * Boa pratica de nomeclatura 
@@ -70,13 +70,30 @@ module.exports = {
                 techs: techsArray,  
                 location : location,
             });
-
+                        
             console.log('Desenvolvedor cadastrado com sucesso.');
 
         } else  {
 
             console.log('Desenvolvedor já cadastrado no banco de dados.');
         }
+
+         // Filtrar as conexões do Socket que estão a no maximo 10Km
+            // de distancia e que o novo Dev tenha pelo menos 1 das
+            // tecnologias filtradas
+            const sendSocketMessageTo = findConnections(
+                { 
+                    latitude: dev.location.coordinates[1],
+                    longitude: dev.location.coordinates[0],
+                },
+                techs,
+            );
+
+            // Enviando para os Clients que estão nessa região
+            // (nos só sabemos desses clients por causa da conexão
+            // websocket) o novo desenvolvedor que acabou de ser
+            // cadastrado.
+            sendEventToClient(sendSocketMessageTo, 'new-dev', dev);            
 
         /**
          * Como eu selecionei ele lá em cima, se ele já tiver cadastrado ele 

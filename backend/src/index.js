@@ -11,7 +11,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const http = require('http');
 const routes = require('./routes.js');
+const { setupWebsocket } = require('./websocket');
 
 // Configuração do acesso ao banco de dados Mongo no mLab
 mongoose.connect('mongodb://omnistack:omnistack10@ds013456.mlab.com:13456/week10', {
@@ -23,9 +25,14 @@ mongoose.connect('mongodb://omnistack:omnistack10@ds013456.mlab.com:13456/week10
 // Configurações Express a Ordem é importante primeiro o json depois do routes
 // O JavaScript executa linha a linha então é importante se atentar a essa ordem.
 const app = express();
+const server = http.Server(app);
+
+// Configurando servidor por Websocket
+setupWebsocket(server);
+
 app.use(cors()); // Dessa forma ele liberar o Cors para todo mundo.
 app.use(express.json());
 app.use(routes);
 
 // Porta da Aplicação
-app.listen(3333);
+server.listen(3333);

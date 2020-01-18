@@ -5,6 +5,7 @@ import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location'
 import { MaterialIcons } from '@expo/vector-icons';
 
 import ConfigAxios from '../config/ConfigAxios';
+import { connect, disconnect, subscribeToNewDevs } from '../config/ConfigSocket';
 
 function Main({ navigation }) {
 
@@ -38,6 +39,30 @@ function Main({ navigation }) {
         loadInitialPosition();
     }, [])
 
+    /**
+     * Função que ira executar toda vez que a variavel
+     * devs mudar.
+     */
+    useEffect(() => {
+
+        // Esse [...devs, dev] copia todos os devs e adicionao novo dev no final
+        
+        // Esse Dev vai vim via injeção por que lá no evento do Socket eu consigo injetar
+        // ele pois recebo isso do servidor.
+        subscribeToNewDevs(dev => setDevs([...devs, dev]));
+
+
+    }, [devs])
+
+    function setupWebSocket(){
+        // Se já tiver conectado vai desconectar primeiro, pois o evento aqui é baseado no botão.
+        disconnect();
+
+        const {latitude, longitude} = currentRegion;
+                
+        connect(latitude, longitude, techs);
+    }
+
     async function loadDevs() {
         
         const {latitude, longitude } = currentRegion;
@@ -51,12 +76,14 @@ function Main({ navigation }) {
         });
 
         setDevs(response.data.devs);
+        setupWebSocket();
     };
 
     function handleRegionChanged(region) {
         setCurrentRegion(region);
     };
 
+    // Só vamos mostrar alguma coisa no APP se tivemos a região do telefone.
     if(!currentRegion){
         
         return null;
